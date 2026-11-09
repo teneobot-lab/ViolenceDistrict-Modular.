@@ -30,6 +30,16 @@ local function registerSafeModules()
         return ModuleAdapter.new("GraphicsProfile", require(script.Visual.GraphicsProfile).new())
     end, "Visual")
 
+    app.Registry:Register("VisibleObjectESP", function()
+        return ModuleAdapter.new("VisibleObjectESP", require(script.Visual.WorldMarkers).new({
+            maxDistance = 250,
+            updateInterval = 0.2,
+            showDistance = true,
+            showHealth = true,
+            showBounds = true,
+        }))
+    end, "Visual")
+
     app.Registry:Register("RuntimeDiagnostics", function()
         return ModuleAdapter.new("RuntimeDiagnostics", require(script.Diagnostics.Runtime).new())
     end, "Diagnostics")
@@ -44,6 +54,7 @@ function app:Start(context)
         settings = self.Settings,
         onError = self.Context.onError,
         movementSampler = self.Context.movementSampler,
+        player = self.Context.player,
     }
     self.Loader = ModuleLoader.new(self.Registry, moduleContext)
     self.Loader:LoadGroup("Diagnostics")
