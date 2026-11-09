@@ -4,14 +4,26 @@ Run these checks in a clean Roblox Luau test place with the source folders repre
 
 ## Bootstrap and lifecycle
 1. Require `src/init.lua`.
-2. Call `App:Start({})`; expect `true`.
+2. Call `App:Start({})`; expect `true` and a ScreenGui under the local player's PlayerGui.
 3. Call `App:Start({})` again; expect `false, "app already started"`.
-4. Call `App:SetFeatureEnabled("Crosshair", true)`; expect success.
-5. Disable Crosshair; expect success.
-6. Call `App:Stop()`; expect no retained UI adapter or loaded module instances.
-7. Start again; expect a clean second lifecycle.
+4. Call `App:SetFeatureEnabled("Crosshair", true)`; expect success and the Visual card to show ON.
+5. Disable Crosshair; expect success and the card to show OFF.
+6. Call `App:SetTheme("Light")`; expect the visible UI to switch to the Light palette.
+7. Call `App:Stop()`; expect ScreenGui destruction, input connection cleanup, and no retained loaded module instances.
+8. Start again; expect a clean second lifecycle.
 
-## UI adapter
+## Native Roblox renderer
+1. Start with no injected `UIAdapter`; expect the built-in renderer to mount.
+2. Confirm Dashboard, Movement, Visual, Diagnostics, and Config navigation buttons switch pages.
+3. Confirm Dashboard module and active counters reflect registered and enabled modules.
+4. Confirm feature cards display the current lifecycle state and toggles update it.
+5. Switch between Dark and Light in Config; verify surfaces, text, and navigation update.
+6. Drag the title bar with mouse and touch; verify the window follows the pointer.
+7. Minimize and restore the window; use the close control to hide it.
+8. Resize the viewport and test desktop, tablet, and narrow mobile dimensions; verify content remains reachable by scrolling.
+9. Stop and restart repeatedly; verify no duplicate ScreenGui or stale input handlers.
+
+## Custom UI adapter
 1. Inject an adapter with `Mount(model, controller)`.
 2. Confirm the model contains Dashboard, Movement, Visual, Diagnostics, and Config groups.
 3. Confirm Visual contains Crosshair and GraphicsProfile.
@@ -32,5 +44,5 @@ Run these checks in a clean Roblox Luau test place with the source folders repre
 3. Confirm other factories in the same group still load.
 4. Confirm destroying the loader cleans up successfully initialized modules.
 
-## Not covered by this test plan
-A concrete visual renderer, graphics API integration, persistent config backend, and game-specific host sampler must each be tested independently when implemented.
+## Verification status
+The native renderer is implemented but has not been executed in Roblox Studio in this environment. Complete the manual checks above before treating the UI as runtime-verified.
