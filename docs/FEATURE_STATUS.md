@@ -14,6 +14,8 @@
 
 ## VisibleObjectESP scope
 - The experience developer must tag eligible BasePart or Model instances with CollectionService tag `VDM_DebugTarget`.
+- Optional String attribute `VDM_DebugCategory` supports `Environment`, `Interactable`, `Resource`, or `Other`; missing/unknown values are treated as `Other`.
+- The Visual settings panel can cycle marker color, label size, maximum distance, and update interval, and toggle each supported category. Defaults are Blue, 12 px, 250 studs, and 0.2 seconds.
 - Player characters are excluded.
 - Targets behind geometry are hidden using a camera raycast.
 - BillboardGui uses `AlwaysOnTop = false`; Highlight uses `DepthMode = Occluded`.
