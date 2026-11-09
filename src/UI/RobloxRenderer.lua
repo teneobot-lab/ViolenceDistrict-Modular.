@@ -262,14 +262,26 @@ function Renderer:Mount(model, controller)
     }, gui)
     self.Root = root
     corner(root, 16); stroke(root, self.Palette.accent, 0.35)
-    create("UISizeConstraint", { MinSize = Vector2.new(320, 360), MaxSize = Vector2.new(900, 650) }, root)
+    create("UISizeConstraint", { MinSize = Vector2.new(280, 320), MaxSize = Vector2.new(900, 650) }, root)
 
-    local scale = create("UIScale", { Scale = 1 }, root)
     local function resize()
         local camera = workspace.CurrentCamera
         if not camera then return end
         local viewport = camera.ViewportSize
-        scale.Scale = math.min(1, (viewport.X - 24) / 760, (viewport.Y - 24) / 500)
+        local width = math.min(760, math.max(280, viewport.X - 24))
+        local height = math.min(500, math.max(320, viewport.Y - 24))
+        local mobile = viewport.X < 520
+        root.Size = UDim2.fromOffset(width, height)
+        if self.Sidebar then
+            local sidebarWidth = mobile and 104 or 174
+            self.Sidebar.Size = UDim2.new(0, sidebarWidth, 1, 0)
+            self.Content.Position = UDim2.new(0, sidebarWidth, 0, 0)
+            self.Content.Size = UDim2.new(1, -sidebarWidth, 1, 0)
+            for _, item in ipairs(self.NavButtons or {}) do
+                item.button.Text = mobile and item.icon or (item.icon .. "   " .. item.label)
+                item.button.TextXAlignment = mobile and Enum.TextXAlignment.Center or Enum.TextXAlignment.Left
+            end
+        end
     end
     resize()
     if workspace.CurrentCamera then
@@ -324,7 +336,7 @@ function Renderer:Mount(model, controller)
         button.LayoutOrder = index
         button.TextXAlignment = Enum.TextXAlignment.Left
         local pad = create("UIPadding", { PaddingLeft = UDim.new(0, 12) }, button)
-        table.insert(navButtons, { id = entry.id, button = button })
+        table.insert(navButtons, { id = entry.id, label = entry.label, icon = entry.icon, button = button })
         table.insert(self.Connections, button.Activated:Connect(function()
             self.ActivePage = entry.id
             self:_refresh()
@@ -348,6 +360,7 @@ function Renderer:Mount(model, controller)
     pageHint.Size = UDim2.new(1, 0, 0, 20); pageHint.LayoutOrder = 1
     self.PageHint = pageHint
 
+    resize()
     self:_refresh()
 end
 
