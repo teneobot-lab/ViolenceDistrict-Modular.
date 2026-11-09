@@ -238,7 +238,7 @@ function Renderer:_renderPage()
         local options = self.Model.visibleObjectESP
         local panel = create("Frame", {
             BackgroundColor3 = palette.surface, BorderSizePixel = 0,
-            Size = UDim2.new(1, 0, 0, 278), LayoutOrder = #items + 2,
+            Size = UDim2.new(1, 0, 0, 296), LayoutOrder = #items + 2,
         }, self.Content)
         corner(panel, 12); stroke(panel)
         local heading = label(panel, "VISIBLE OBJECT ESP SETTINGS", 11, palette.accent, Enum.Font.GothamBold)
