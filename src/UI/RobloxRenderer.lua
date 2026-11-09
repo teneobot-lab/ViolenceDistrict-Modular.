@@ -1,6 +1,5 @@
 -- Native Roblox UI renderer. No executor APIs or game-state manipulation.
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
 local Renderer = {}
