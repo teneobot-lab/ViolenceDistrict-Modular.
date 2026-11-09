@@ -37,6 +37,11 @@ function Controller:BuildModel()
         theme = Theme.Get(self.ThemeName),
         groups = groups,
         themeName = self.ThemeName,
+        visibleObjectESP = (function()
+            local instance = self.Loader.Loaded.VisibleObjectESP
+            local implementation = instance and instance.GetImplementation and instance:GetImplementation()
+            return implementation and implementation.GetOptions and implementation:GetOptions() or nil
+        end)(),
     }
 end
 
@@ -63,6 +68,20 @@ function Controller:SetTheme(name)
     self.ThemeName = name
     self.Settings:Set("theme", name)
     self:Refresh()
+end
+
+function Controller:SetModuleOption(name, key, value)
+    local instance = self.Loader.Loaded[name]
+    local implementation = instance and instance.GetImplementation and instance:GetImplementation()
+    if not implementation or not implementation.SetOptions then
+        return false, "module does not expose configurable options"
+    end
+    local patch = {}
+    patch[key] = value
+    local ok, result = pcall(function() return implementation:SetOptions(patch) end)
+    if not ok then return false, result end
+    self:Refresh()
+    return true, result
 end
 
 function Controller:SetFeatureEnabled(name, enabled)
