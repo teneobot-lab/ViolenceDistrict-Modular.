@@ -1,24 +1,61 @@
 # ViolenceDistrict Modular
 
-Modular Lua project scaffold based on the feature inventory recovered from the reference file.
+A modular Lua project scaffold based on the recovered feature inventory from the reference source.
 
 ## Goals
 - Small core with lazy feature loading.
-- Independent modules with Init/Enable/Disable/Destroy lifecycle.
-- Central settings and event bus.
+- Independent module lifecycle: `Init`, `Enable`, `Disable`, and `Destroy`.
+- Renderer-independent UI model and theme tokens.
+- Explicit dependency injection for host-specific integrations.
 - No automatic network telemetry, HWID collection, remote payload execution, or hidden webhooks.
 - Competitive-impact features are catalogued but deliberately disabled; no exploit or unfair-play implementation is included.
 
 ## Layout
-- `src/Core`: module lifecycle, registry, event bus, settings.
-- `src/Visual`: local-only crosshair and graphics preference module.
-- `src/Movement`: safe movement diagnostics and configurable local profile (does not alter server-authoritative movement).
-- `src/Diagnostics`: performance and runtime diagnostics.
+- `src/Core`: module lifecycle, registry, adapters, loader, event bus, and settings.
+- `src/UI`: navigation model, theme presets, and host-renderer contract.
+- `src/Visual`: local crosshair state and graphics preference profile.
+- `src/Movement`: passive movement diagnostics and local profile preferences.
+- `src/Diagnostics`: runtime uptime and sample snapshots.
 - `src/Config`: config validation and storage adapter interface.
-- `src/Catalog`: complete recovered feature inventory and disabled-feature reasons.
+- `src/Catalog` and `src/Modules`: recovered feature inventory and safe runtime manifest.
+- `docs`: architecture, feature status, and implementation notes.
 
-## Runtime
-Designed for a standard Lua environment with adapters supplied by the host. Roblox-specific integrations should be implemented only for permitted local UI/diagnostics. The scaffold does not assume executor APIs.
+## Bootstrap
 
-## Status
-Scaffold / early development. Feature names in Catalog are inventory entries, not claims of implemented functionality.
+The entry point is `src/init.lua`. In a Roblox ModuleScript hierarchy, require it and call:
+
+```lua
+local App = require(path.to.init)
+
+App:Start({
+    UIAdapter = myUIRenderer, -- optional
+    movementSampler = myMovementSampler, -- optional, passive data only
+    onError = function(moduleName, message)
+        warn(moduleName .. ": " .. message)
+    end,
+})
+
+App:SetFeatureEnabled("Crosshair", true)
+App:SetFeatureEnabled("Crosshair", false)
+App:Stop()
+```
+
+The UI adapter contract is:
+- `Mount(model, controller)` — required to display a UI.
+- `Update(model)` — optional, called when the theme changes.
+- `Unmount()` — optional cleanup.
+
+The movement sampler contract is:
+- `Subscribe(callback)` returns either a disconnect function or a connection object with `Disconnect()`.
+- The callback receives a sample table containing optional `position`, `velocity`, and `grounded` fields.
+- The sampler is supplied by the host; this project does not alter movement or server state.
+
+## Runtime status
+
+The safe feature factories are registered by the bootstrap and loaded independently. The UI controller produces a model and does not assume a particular UI library. Crosshair rendering, actual graphics application, persistent storage, and host sampling still require explicit adapters.
+
+Designed for a standard Lua environment with host adapters supplied. Roblox-specific integrations should be implemented only for permitted local UI and diagnostics. The scaffold does not assume executor APIs.
+
+## Safety boundary
+
+Aim assistance, wall-penetrating ESP, noclip, remote-event manipulation, objective automation, hidden telemetry, HWID fingerprinting, and remote code execution are not implemented. Their recovered names remain inventory-only for audit purposes.
