@@ -233,6 +233,61 @@ function Renderer:_renderPage()
             self:Update(self.Controller:BuildModel())
         end))
     end
+
+    if self.ActivePage == "Visual" and self.Model.visibleObjectESP then
+        local options = self.Model.visibleObjectESP
+        local panel = create("Frame", {
+            BackgroundColor3 = palette.surface, BorderSizePixel = 0,
+            Size = UDim2.new(1, 0, 0, 278), LayoutOrder = #items + 2,
+        }, self.Content)
+        corner(panel, 12); stroke(panel)
+        local heading = label(panel, "VISIBLE OBJECT ESP SETTINGS", 11, palette.accent, Enum.Font.GothamBold)
+        heading.Position = UDim2.fromOffset(15, 10); heading.Size = UDim2.new(1, -30, 0, 20)
+        local hint = label(panel, "Hanya tag VDM_DebugTarget • occlusion aktif • karakter pemain dikecualikan", 10, palette.muted)
+        hint.Position = UDim2.fromOffset(15, 31); hint.Size = UDim2.new(1, -30, 0, 28)
+
+        local function settingRow(y, titleText, valueText, key, nextValue)
+            local rowTitle = label(panel, titleText, 11, palette.text)
+            rowTitle.Position = UDim2.fromOffset(15, y); rowTitle.Size = UDim2.new(0.48, -15, 0, 30)
+            local button = self:_button(panel, valueText, UDim2.new(0.48, -15, 0, 30), palette.surfaceAlt)
+            button.Position = UDim2.new(0.52, 0, 0, y)
+            table.insert(self.Connections, button.Activated:Connect(function()
+                local ok, err = self.Controller:SetModuleOption("VisibleObjectESP", key, nextValue())
+                if not ok then warn("[VDM UI] " .. tostring(err)) end
+            end))
+        end
+
+        local distances = { 100, 250, 400, 600, 1000 }
+        local intervals = { 0.1, 0.2, 0.35, 0.5, 1 }
+        local sizes = { 10, 12, 14, 16, 18, 20 }
+        local colors = { "Blue", "Green", "Amber", "Violet", "White" }
+        local function nextIn(list, current)
+            for index, value in ipairs(list) do
+                if value == current then return list[index % #list + 1] end
+            end
+            return list[1]
+        end
+        settingRow(64, "Warna marker", options.markerColor, "markerColor", function() return nextIn(colors, options.markerColor) end)
+        settingRow(99, "Ukuran label", tostring(options.labelSize) .. " px", "labelSize", function() return nextIn(sizes, options.labelSize) end)
+        settingRow(134, "Jarak maksimum", tostring(options.maxDistance) .. " studs", "maxDistance", function() return nextIn(distances, options.maxDistance) end)
+        settingRow(169, "Interval update", string.format("%.2f s", options.updateInterval), "updateInterval", function() return nextIn(intervals, options.updateInterval) end)
+
+        local categoryTitle = label(panel, "FILTER KATEGORI (atribut VDM_DebugCategory)", 10, palette.muted, Enum.Font.GothamBold)
+        categoryTitle.Position = UDim2.fromOffset(15, 205); categoryTitle.Size = UDim2.new(1, -30, 0, 18)
+        local categories = { "Environment", "Interactable", "Resource", "Other" }
+        for index, category in ipairs(categories) do
+            local enabled = options.categories and options.categories[category] ~= false
+            local button = self:_button(panel, category .. (enabled and "  ✓" or "  ×"), UDim2.new(0.48, -8, 0, 28), enabled and palette.accent or palette.surfaceAlt)
+            local column = (index - 1) % 2
+            local row = math.floor((index - 1) / 2)
+            button.Position = UDim2.new(column == 0 and 0 or 0.52, column == 0 and 15 or 0, 0, 228 + row * 32)
+            table.insert(self.Connections, button.Activated:Connect(function()
+                local nextCategories = table.clone(options.categories or {})
+                nextCategories[category] = not enabled
+                self.Controller:SetModuleOption("VisibleObjectESP", "categories", nextCategories)
+            end))
+        end
+    end
 end
 
 function Renderer:Mount(model, controller)
