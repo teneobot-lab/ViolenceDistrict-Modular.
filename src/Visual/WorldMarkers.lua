@@ -97,7 +97,7 @@ function WorldMarkers:_makeMarker(target, adornee)
         highlight.OutlineColor = Color3.fromRGB(76, 155, 255)
         highlight.OutlineTransparency = 0.08
         highlight.Enabled = false
-        highlight.Parent = self.folder
+        highlight.Parent = workspace
     end
 
     gui.Parent = self.folder
@@ -115,7 +115,7 @@ function WorldMarkers:_isVisible(target, position)
     params.FilterDescendantsInstances = self.player and self.player.Character and { self.player.Character } or {}
 
     local result = workspace:Raycast(origin, direction, params)
-    return result == nil or result.Instance:IsDescendantOf(target)
+    return result == nil or result.Instance == target or result.Instance:IsDescendantOf(target)
 end
 
 function WorldMarkers:_updateTarget(target)
