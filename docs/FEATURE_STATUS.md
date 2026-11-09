@@ -10,6 +10,14 @@
 - Crosshair state model.
 - Local graphics preference model.
 - Runtime diagnostics.
+- Visible-only debug object markers for explicitly tagged objects in an experience the developer owns. Includes name, distance, optional Humanoid health, occluded bounding outline, range limit, and automatic cleanup.
+
+## VisibleObjectESP scope
+- The experience developer must tag eligible BasePart or Model instances with CollectionService tag `VDM_DebugTarget`.
+- Player characters are excluded.
+- Targets behind geometry are hidden using a camera raycast.
+- BillboardGui uses `AlwaysOnTop = false`; Highlight uses `DepthMode = Occluded`.
+- This is a debugging aid for a place the developer owns, not a hidden-player/object scanner. It will not discover untagged game entities in third-party experiences.
 
 ## Catalogued but intentionally not implemented
 Features that automate competitive actions, alter server-authoritative movement, manipulate remotes, target other players, reveal hidden players/objects, bypass game mechanics, or interfere with objectives are inventory-only. This includes silent aim, aimbots, autofarm, auto-parry, remote pallet actions, trajectory noclip, network desync, speed/vault manipulation, and wall-penetrating ESP.
