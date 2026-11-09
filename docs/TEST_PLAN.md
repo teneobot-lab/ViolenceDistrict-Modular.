@@ -12,6 +12,18 @@ Run these checks in a clean Roblox Luau test place with the source folders repre
 7. Call `App:Stop()`; expect ScreenGui destruction, input connection cleanup, and no retained loaded module instances.
 8. Start again; expect a clean second lifecycle.
 
+## VisibleObjectESP
+1. In a test place you own, create a Part named `DebugCrate` and tag it with CollectionService tag `VDM_DebugTarget`.
+2. Start the app and enable `VisibleObjectESP`; expect a marker with the object name.
+3. Move closer/farther; expect distance text to update and the marker to disappear beyond 250 studs.
+4. Place a wall between the camera and the tagged part; expect the marker and outline to hide.
+5. Remove the wall; expect the marker to return.
+6. Tag a Model containing a Humanoid; expect health text to appear when enabled.
+7. Tag a player character; expect it to be excluded.
+8. Remove the tag or destroy the target; expect marker and Highlight instances to be cleaned up.
+9. Disable the module and stop the app; expect the Heartbeat connection and marker folder to be removed.
+10. Confirm untagged objects and objects in third-party experiences are not discovered.
+
 ## Native Roblox renderer
 1. Start with no injected `UIAdapter`; expect the built-in renderer to mount.
 2. Confirm Dashboard, Movement, Visual, Diagnostics, and Config navigation buttons switch pages.
@@ -26,7 +38,7 @@ Run these checks in a clean Roblox Luau test place with the source folders repre
 ## Custom UI adapter
 1. Inject an adapter with `Mount(model, controller)`.
 2. Confirm the model contains Dashboard, Movement, Visual, Diagnostics, and Config groups.
-3. Confirm Visual contains Crosshair and GraphicsProfile.
+3. Confirm Visual contains Crosshair, GraphicsProfile, and VisibleObjectESP.
 4. Call `controller:SetTheme("Light")`; expect `Update(model)` if supplied.
 5. Stop the app; expect `Unmount()`.
 
@@ -45,4 +57,4 @@ Run these checks in a clean Roblox Luau test place with the source folders repre
 4. Confirm destroying the loader cleans up successfully initialized modules.
 
 ## Verification status
-The native renderer is implemented but has not been executed in Roblox Studio in this environment. Complete the manual checks above before treating the UI as runtime-verified.
+The native renderer and VisibleObjectESP are implemented but have not been executed in Roblox Studio in this environment. Complete the manual checks above before treating them as runtime-verified.
