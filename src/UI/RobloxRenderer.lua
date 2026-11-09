@@ -61,6 +61,7 @@ function Renderer.new(options)
         Model = nil,
         ActivePage = "Dashboard",
         Connections = {},
+        PageConnections = {},
         Cards = {},
         Palette = nil,
     }, Renderer)
@@ -71,6 +72,13 @@ function Renderer:_disconnect()
         connection:Disconnect()
     end
     table.clear(self.Connections)
+    for _, connection in ipairs(self.PageConnections) do connection:Disconnect() end
+    table.clear(self.PageConnections)
+end
+
+function Renderer:_disconnectPage()
+    for _, connection in ipairs(self.PageConnections) do connection:Disconnect() end
+    table.clear(self.PageConnections)
 end
 
 function Renderer:_palette(theme)
@@ -129,6 +137,7 @@ function Renderer:_refresh()
 end
 
 function Renderer:_renderPage()
+    self:_disconnectPage()
     for _, child in ipairs(self.Content:GetChildren()) do
         if child ~= self.PageTitle and child ~= self.PageHint and not child:IsA("UIListLayout") and not child:IsA("UIPadding") then
             child:Destroy()
@@ -196,8 +205,8 @@ function Renderer:_renderPage()
         dark.Position = UDim2.fromOffset(16, 66)
         local light = self:_button(panel, "Light", UDim2.fromOffset(104, 34), self.Model.themeName == "Light" and palette.accent or palette.surfaceAlt)
         light.Position = UDim2.fromOffset(130, 66)
-        table.insert(self.Connections, dark.Activated:Connect(function() self.Controller:SetTheme("Dark") end))
-        table.insert(self.Connections, light.Activated:Connect(function() self.Controller:SetTheme("Light") end))
+        table.insert(self.PageConnections, dark.Activated:Connect(function() self.Controller:SetTheme("Dark") end))
+        table.insert(self.PageConnections, light.Activated:Connect(function() self.Controller:SetTheme("Light") end))
         return
     end
 
@@ -225,7 +234,7 @@ function Renderer:_renderPage()
         local toggle = self:_button(card, isEnabled and "ON" or "OFF", UDim2.fromOffset(62, 30), isEnabled and palette.accent or palette.surfaceAlt)
         toggle.Position = UDim2.new(1, -77, 0.5, -15)
         self.Cards[item.id] = toggle
-        table.insert(self.Connections, toggle.Activated:Connect(function()
+        table.insert(self.PageConnections, toggle.Activated:Connect(function()
             local ok, err = self.Controller:SetFeatureEnabled(item.id, not isEnabled)
             if not ok then
                 warn("[VDM UI] " .. tostring(err))
@@ -251,7 +260,7 @@ function Renderer:_renderPage()
             rowTitle.Position = UDim2.fromOffset(15, y); rowTitle.Size = UDim2.new(0.48, -15, 0, 30)
             local button = self:_button(panel, valueText, UDim2.new(0.48, -15, 0, 30), palette.surfaceAlt)
             button.Position = UDim2.new(0.52, 0, 0, y)
-            table.insert(self.Connections, button.Activated:Connect(function()
+            table.insert(self.PageConnections, button.Activated:Connect(function()
                 local ok, err = self.Controller:SetModuleOption("VisibleObjectESP", key, nextValue())
                 if not ok then warn("[VDM UI] " .. tostring(err)) end
             end))
@@ -281,7 +290,7 @@ function Renderer:_renderPage()
             local column = (index - 1) % 2
             local row = math.floor((index - 1) / 2)
             button.Position = UDim2.new(column == 0 and 0 or 0.52, column == 0 and 15 or 0, 0, 228 + row * 32)
-            table.insert(self.Connections, button.Activated:Connect(function()
+            table.insert(self.PageConnections, button.Activated:Connect(function()
                 local nextCategories = table.clone(options.categories or {})
                 nextCategories[category] = not enabled
                 self.Controller:SetModuleOption("VisibleObjectESP", "categories", nextCategories)
