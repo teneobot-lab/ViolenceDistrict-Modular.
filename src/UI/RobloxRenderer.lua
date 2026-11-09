@@ -118,6 +118,8 @@ function Renderer:_refresh()
     self.Title.TextColor3 = palette.text
     self.PageTitle.TextColor3 = palette.text
     self.PageHint.TextColor3 = palette.muted
+    self.PageTitle.Text = self.ActivePage
+    self.PageHint.Text = self.ActivePage == "Dashboard" and "Overview and module controls" or "Manage local modules and preferences"
     for _, item in ipairs(self.NavButtons) do
         local selected = item.id == self.ActivePage
         item.button.BackgroundColor3 = selected and palette.accent or palette.surfaceAlt
@@ -144,6 +146,7 @@ function Renderer:_renderPage()
             BackgroundColor3 = palette.surface, BorderSizePixel = 0,
             Size = UDim2.new(1, 0, 0, 116),
         }, self.Content)
+        panel.LayoutOrder = 2
         corner(panel, 14); stroke(panel)
         label(panel, "WELCOME BACK", 11, palette.accent, Enum.Font.GothamBold).Position = UDim2.fromOffset(18, 15)
         local heading = label(panel, "ViolenceDistrict Modular", 21, palette.text, Enum.Font.GothamBold)
@@ -151,7 +154,7 @@ function Renderer:_renderPage()
         local sub = label(panel, "Modular control center • safe local modules", 12, palette.muted)
         sub.Position = UDim2.fromOffset(18, 72); sub.Size = UDim2.new(1, -36, 0, 24)
 
-        local stats = create("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 84) }, self.Content)
+        local stats = create("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 84), LayoutOrder = 3 }, self.Content)
         local grid = create("UIGridLayout", {
             CellPadding = UDim2.fromOffset(10, 0),
             CellSize = UDim2.new(0.333, -7, 1, 0),
@@ -174,7 +177,7 @@ function Renderer:_renderPage()
             local v = label(tile, pair[2], 17, palette.text, Enum.Font.GothamBold)
             v.Position = UDim2.fromOffset(12, 34); v.Size = UDim2.new(1, -24, 0, 28)
         end
-        local note = create("Frame", { BackgroundColor3 = palette.surface, BorderSizePixel = 0, Size = UDim2.new(1, 0, 0, 88) }, self.Content)
+        local note = create("Frame", { BackgroundColor3 = palette.surface, BorderSizePixel = 0, Size = UDim2.new(1, 0, 0, 88), LayoutOrder = 4 }, self.Content)
         corner(note, 12); stroke(note)
         local n = label(note, "SAFE MODE", 11, palette.accent, Enum.Font.GothamBold)
         n.Position = UDim2.fromOffset(16, 12); n.Size = UDim2.new(1, -32, 0, 18)
@@ -184,7 +187,7 @@ function Renderer:_renderPage()
     end
 
     if self.ActivePage == "Config" then
-        local panel = create("Frame", { BackgroundColor3 = palette.surface, BorderSizePixel = 0, Size = UDim2.new(1, 0, 0, 112) }, self.Content)
+        local panel = create("Frame", { BackgroundColor3 = palette.surface, BorderSizePixel = 0, Size = UDim2.new(1, 0, 0, 112), LayoutOrder = 2 }, self.Content)
         corner(panel, 12); stroke(panel)
         label(panel, "APPEARANCE", 11, palette.accent, Enum.Font.GothamBold).Position = UDim2.fromOffset(16, 12)
         local desc = label(panel, "Pilih tema tampilan panel.", 12, palette.muted)
@@ -201,16 +204,18 @@ function Renderer:_renderPage()
     local items = group and group.items or {}
     if #items == 0 then
         local empty = label(self.Content, "Belum ada modul pada bagian ini.", 13, palette.muted)
+        empty.LayoutOrder = 2
         empty.Size = UDim2.new(1, 0, 0, 44)
         return
     end
-    for _, item in ipairs(items) do
+    for index, item in ipairs(items) do
         local instance = self.Controller.Loader.Loaded[item.id]
         local isEnabled = instance ~= nil and instance.State == "enabled"
         local card = create("Frame", {
             BackgroundColor3 = palette.surface,
             BorderSizePixel = 0,
             Size = UDim2.new(1, 0, 0, 88),
+            LayoutOrder = index + 1,
         }, self.Content)
         corner(card, 12); stroke(card)
         local title = label(card, item.label, 14, palette.text, Enum.Font.GothamBold)
