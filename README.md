@@ -1,6 +1,6 @@
 # ViolenceDistrict Modular
 
-A modular Lua project scaffold based on the recovered feature inventory from the reference source.
+A modular Luau project scaffold based on the recovered feature inventory from the reference source.
 
 ## Goals
 - Small core with lazy feature loading.
@@ -22,7 +22,7 @@ A modular Lua project scaffold based on the recovered feature inventory from the
 
 ## Bootstrap
 
-The entry point is `src/init.lua`. In a Roblox ModuleScript hierarchy, require it and call:
+The entry point is `src/init.lua`. Place the folders under a Roblox ModuleScript hierarchy, require the entry point, and call:
 
 ```lua
 local App = require(path.to.init)
@@ -54,7 +54,7 @@ The movement sampler contract is:
 
 The safe feature factories are registered by the bootstrap and loaded independently. The UI controller produces a model and does not assume a particular UI library. Crosshair rendering, actual graphics application, persistent storage, and host sampling still require explicit adapters.
 
-Designed for a standard Lua environment with host adapters supplied. Roblox-specific integrations should be implemented only for permitted local UI and diagnostics. The scaffold does not assume executor APIs.
+This project currently targets Roblox Luau ModuleScripts. It does not assume executor APIs.
 
 ## Safety boundary
 
