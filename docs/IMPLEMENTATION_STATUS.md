@@ -1,19 +1,18 @@
 # Implementation Status
 
-## Wired into the runtime
-- Module adapter: common lifecycle around small feature models.
-- Bootstrap: registers safe feature factories and starts selected groups.
-- UI controller: renderer-independent navigation model, theme tokens, and feature toggles.
-- Movement diagnostics: passive sample storage only; it never writes movement values.
-- Crosshair: local state model; actual drawing requires a host UI adapter.
-- Graphics profile: stores preferences; it does not inject post-processing.
-- Runtime diagnostics: uptime and explicitly submitted samples.
+## Implemented
+- Module adapter, registry, loader, settings, and bootstrap.
+- Renderer-independent UI controller with theme state and feature lifecycle actions.
+- Native Roblox ScreenGui renderer with Dashboard, Movement, Visual, Diagnostics, and Config navigation.
+- Dark and Light themes, feature cards/toggles, module/active counters, drag, minimize, hide, and viewport-aware scaling.
+- Renderer cleanup disconnects input and UI connections and destroys its ScreenGui.
+- Movement diagnostics remains passive; visual and graphics modules remain local preference/state models.
 
 ## Host integration still required
-- A concrete UI renderer implementing `Mount(model, controller)`, optional `Update(model)`, and optional `Unmount()`.
 - A trusted movement sampler that submits only data from the user's own experience.
 - A storage backend for persistent configuration.
-- Runtime testing in the intended Lua host.
+- Crosshair drawing and actual graphics preference application.
+- Runtime verification in Roblox Studio, including device-specific layout checks.
 
 ## Not implemented
 Competitive-impact automation, aim assistance, wall-penetrating ESP, noclip, remote-event manipulation, objective automation, hidden telemetry, HWID fingerprinting, and remote code execution are not implemented.
