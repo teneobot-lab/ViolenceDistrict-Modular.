@@ -17,6 +17,7 @@ local DESCRIPTIONS = {
     MovementDiagnostics = "Merekam sampel posisi, kecepatan, dan status grounded secara pasif.",
     Crosshair = "Model status crosshair lokal. Renderer crosshair khusus belum disertakan.",
     GraphicsProfile = "Menyimpan preset preferensi grafis lokal tanpa memaksa efek game.",
+    VisibleObjectESP = "Penanda objek debug yang diberi tag, hanya saat terlihat; pemain dikecualikan.",
     RuntimeDiagnostics = "Menampilkan uptime dan snapshot diagnostik runtime.",
 }
 
