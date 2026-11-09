@@ -13,7 +13,7 @@ A modular Luau project scaffold based on the recovered feature inventory from th
 ## Layout
 - `src/Core`: module lifecycle, registry, adapters, loader, event bus, and settings.
 - `src/UI`: navigation controller, theme presets, and native Roblox ScreenGui renderer.
-- `src/Visual`: local crosshair state and graphics preference profile.
+- `src/Visual`: local crosshair state, graphics preferences, and visible-only tagged debug object markers.
 - `src/Movement`: passive movement diagnostics and local profile preferences.
 - `src/Diagnostics`: runtime uptime and sample snapshots.
 - `src/Config`: config validation and storage adapter interface.
@@ -48,6 +48,12 @@ Custom UI adapter contract:
 - `Mount(model, controller)` — required to display a UI.
 - `Update(model)` — optional, called when the model or theme changes.
 - `Unmount()` — optional cleanup.
+
+Visible object marker setup (for a place you own):
+- Add the CollectionService tag `VDM_DebugTarget` to a `BasePart` or `Model` you want to inspect.
+- Enable `VisibleObjectESP` from the Visual page or with `App:SetFeatureEnabled("VisibleObjectESP", true)`.
+- Markers show the object name, distance, and Humanoid health when available. Bounding outlines are occlusion-aware; player characters are excluded.
+- Untagged instances and objects hidden behind geometry are not shown. This module is not a scanner for third-party game entities.
 
 Movement sampler contract:
 - `Subscribe(callback)` returns either a disconnect function or a connection object with `Disconnect()`.
