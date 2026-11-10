@@ -28,6 +28,9 @@ Run these checks in a clean Roblox Luau test place with the source folders repre
 13. Tag owned test objects with `VDM_DebugTarget` and set `VDM_DebugCategory` to each supported value (`Environment`, `Interactable`, `Resource`, `Other`); verify category toggles include/exclude only the selected categories.
 14. Set a missing or unknown category attribute; verify the object is classified as `Other` and follows that filter.
 15. Disable all category filters; verify no tagged debug markers remain visible. Re-enable one category and verify only its tagged targets return.
+16. Add the debug tag to an instance outside `Workspace`; verify it never receives a marker.
+17. Set a tagged target's parts to `CanQuery = false`; verify a raycast miss does not make it appear visible.
+18. Tag a model nested inside a player character, and a model that contains a player character; verify both are excluded.
 
 ## Native Roblox renderer
 1. Start with no injected `UIAdapter`; expect the built-in renderer to mount.
