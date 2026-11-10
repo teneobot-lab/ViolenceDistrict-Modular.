@@ -109,15 +109,11 @@ function WorldMarkers:SetOptions(patch)
         if not target:IsDescendantOf(workspace)
             or isPlayerCharacter(target)
             or not self:_categoryAllowed(target)
-            or not adornee
-            or not camera
         then
-            if not self:_categoryAllowed(target) then
-                self:_clearMarker(target)
-            else
-                marker.gui.Enabled = false
-                if marker.highlight then marker.highlight.Enabled = false end
-            end
+            self:_clearMarker(target)
+        elseif not adornee or not camera then
+            marker.gui.Enabled = false
+            if marker.highlight then marker.highlight.Enabled = false end
         else
             self:_applyStyle(marker)
             local distance = (camera.CFrame.Position - adornee.Position).Magnitude
