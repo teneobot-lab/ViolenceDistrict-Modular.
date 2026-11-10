@@ -17,7 +17,9 @@
 - Optional String attribute `VDM_DebugCategory` supports `Environment`, `Interactable`, `Resource`, or `Other`; missing/unknown values are treated as `Other`.
 - The Visual settings panel can cycle marker color, label size, maximum distance, and update interval, and toggle each supported category. Defaults are Blue, 12 px, 250 studs, and 0.2 seconds.
 - Player characters are excluded.
-- Targets behind geometry are hidden using a camera raycast.
+- Targets must be descendants of `Workspace`; targets outside the rendered world are ignored.
+- A camera raycast must hit the tagged target (or one of its descendants) before a marker is shown; a raycast miss is treated as not visible.
+- Player characters are excluded even when a tagged object is nested inside or wraps a character model.
 - BillboardGui uses `AlwaysOnTop = false`; Highlight uses `DepthMode = Occluded`.
 - This is a debugging aid for a place the developer owns, not a hidden-player/object scanner. It will not discover untagged game entities in third-party experiences.
 
