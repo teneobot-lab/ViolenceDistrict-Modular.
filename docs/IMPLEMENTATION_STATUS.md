@@ -7,7 +7,7 @@
 - Dark and Light themes, feature cards/toggles, module/active counters, drag, minimize, hide, and viewport-aware scaling.
 - Renderer cleanup disconnects input and UI connections and destroys its ScreenGui.
 - Movement diagnostics remains passive; visual and graphics modules remain local preference/state models.
-- VisibleObjectESP for explicitly tagged debug objects in an owned experience: name, distance, optional Humanoid health, occlusion-aware outline, configurable marker color, label size, range, update interval, category filters, and cleanup.
+- VisibleObjectESP for explicitly tagged debug objects in an owned experience: name, distance, optional Humanoid health, occlusion-aware outline, configurable marker color, label size, range, update interval, category filters, strict Workspace membership, positive raycast visibility, nested player-character exclusion, and cleanup.
 - Visual UI settings panel connected through the UI controller to the module option API.
 
 ## Host integration still required
