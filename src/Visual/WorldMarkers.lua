@@ -103,9 +103,28 @@ function WorldMarkers:SetOptions(patch)
     if patch.categories ~= nil then
         options.categories = normalizeCategories(patch.categories)
     end
-    for _, target in ipairs(CollectionService:GetTagged(TAG)) do
-        local marker = self.markers[target]
-        if marker then self:_applyStyle(marker) end
+    for target, marker in pairs(self.markers) do
+        local adornee = getAdornee(target)
+        local camera = workspace.CurrentCamera
+        if not target:IsDescendantOf(workspace)
+            or isPlayerCharacter(target)
+            or not self:_categoryAllowed(target)
+            or not adornee
+            or not camera
+        then
+            if not self:_categoryAllowed(target) then
+                self:_clearMarker(target)
+            else
+                marker.gui.Enabled = false
+                if marker.highlight then marker.highlight.Enabled = false end
+            end
+        else
+            self:_applyStyle(marker)
+            local distance = (camera.CFrame.Position - adornee.Position).Magnitude
+            local visible = distance <= options.maxDistance and self:_isVisible(target, adornee.Position)
+            marker.gui.Enabled = visible
+            if marker.highlight then marker.highlight.Enabled = visible end
+        end
     end
     return self:GetOptions()
 end
