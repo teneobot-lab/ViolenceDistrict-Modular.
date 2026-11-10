@@ -24,7 +24,7 @@ Run these checks in a clean Roblox Luau test place with the source folders repre
 9. Disable the module and stop the app; expect the Heartbeat connection and marker folder to be removed.
 10. Confirm untagged objects and objects in third-party experiences are not discovered.
 11. In the Visual page, cycle marker color and label size; verify existing and newly created markers update immediately.
-12. Cycle maximum distance and update interval; verify the distance cutoff and refresh cadence follow the selected values.
+12. Cycle maximum distance and update interval; verify the distance cutoff, outline visibility, and refresh cadence follow the selected values immediately after each change.
 13. Tag owned test objects with `VDM_DebugTarget` and set `VDM_DebugCategory` to each supported value (`Environment`, `Interactable`, `Resource`, `Other`); verify category toggles include/exclude only the selected categories.
 14. Set a missing or unknown category attribute; verify the object is classified as `Other` and follows that filter.
 15. Disable all category filters; verify no tagged debug markers remain visible. Re-enable one category and verify only its tagged targets return.
