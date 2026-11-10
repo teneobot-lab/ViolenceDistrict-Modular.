@@ -28,8 +28,17 @@ local function getAdornee(target)
 end
 
 local function isPlayerCharacter(target)
-    local model = target:IsA("Model") and target or target:FindFirstAncestorOfClass("Model")
-    return model ~= nil and Players:GetPlayerFromCharacter(model) ~= nil
+    for _, player in ipairs(Players:GetPlayers()) do
+        local character = player.Character
+        if character and (
+            target == character
+            or target:IsDescendantOf(character)
+            or character:IsDescendantOf(target)
+        ) then
+            return true
+        end
+    end
+    return false
 end
 
 local function normalizeCategories(value)
@@ -173,7 +182,7 @@ function WorldMarkers:_isVisible(target, position)
     params.FilterType = Enum.RaycastFilterType.Exclude
     params.FilterDescendantsInstances = self.player and self.player.Character and { self.player.Character } or {}
     local result = workspace:Raycast(origin, direction, params)
-    return result == nil or result.Instance == target or result.Instance:IsDescendantOf(target)
+    return result ~= nil and (result.Instance == target or result.Instance:IsDescendantOf(target))
 end
 
 function WorldMarkers:_categoryAllowed(target)
@@ -185,7 +194,7 @@ function WorldMarkers:_categoryAllowed(target)
 end
 
 function WorldMarkers:_updateTarget(target)
-    if not target.Parent or isPlayerCharacter(target) or not self:_categoryAllowed(target) then
+    if not target:IsDescendantOf(workspace) or isPlayerCharacter(target) or not self:_categoryAllowed(target) then
         self:_clearMarker(target)
         return
     end
