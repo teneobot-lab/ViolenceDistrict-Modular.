@@ -233,9 +233,11 @@ function Renderer:_renderPage()
         detail.Position = UDim2.fromOffset(15, 39); detail.Size = UDim2.new(1, -112, 0, 36)
         local toggle = self:_button(card, isEnabled and "ON" or "OFF", UDim2.fromOffset(62, 30), isEnabled and palette.accent or palette.surfaceAlt)
         toggle.Position = UDim2.new(1, -77, 0.5, -15)
-        self.Cards[item.id] = toggle
+        local moduleId = item.id
+        local wasEnabled = isEnabled
+        self.Cards[moduleId] = toggle
         table.insert(self.PageConnections, toggle.Activated:Connect(function()
-            local ok, err = self.Controller:SetFeatureEnabled(item.id, not isEnabled)
+            local ok, err = self.Controller:SetFeatureEnabled(moduleId, not wasEnabled)
             if not ok then
                 warn("[VDM UI] " .. tostring(err))
             end
@@ -285,14 +287,16 @@ function Renderer:_renderPage()
         categoryTitle.Position = UDim2.fromOffset(15, 205); categoryTitle.Size = UDim2.new(1, -30, 0, 18)
         local categories = { "Environment", "Interactable", "Resource", "Other" }
         for index, category in ipairs(categories) do
-            local enabled = options.categories and options.categories[category] ~= false
-            local button = self:_button(panel, category .. (enabled and "  ✓" or "  ×"), UDim2.new(0.48, -8, 0, 28), enabled and palette.accent or palette.surfaceAlt)
+            local categoryKey = category
+            local enabled = options.categories and options.categories[categoryKey] ~= false
+            local categoryEnabled = enabled
+            local button = self:_button(panel, categoryKey .. (categoryEnabled and "  ✓" or "  ×"), UDim2.new(0.48, -8, 0, 28), categoryEnabled and palette.accent or palette.surfaceAlt)
             local column = (index - 1) % 2
             local row = math.floor((index - 1) / 2)
             button.Position = UDim2.new(column == 0 and 0 or 0.52, column == 0 and 15 or 0, 0, 228 + row * 32)
             table.insert(self.PageConnections, button.Activated:Connect(function()
                 local nextCategories = table.clone(options.categories or {})
-                nextCategories[category] = not enabled
+                nextCategories[categoryKey] = not categoryEnabled
                 self.Controller:SetModuleOption("VisibleObjectESP", "categories", nextCategories)
             end))
         end
