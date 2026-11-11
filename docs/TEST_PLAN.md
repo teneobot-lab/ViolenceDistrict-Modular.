@@ -31,6 +31,8 @@ Run these checks in a clean Roblox Luau test place with the source folders repre
 16. Add the debug tag to an instance outside `Workspace`; verify it never receives a marker.
 17. Set a tagged target's parts to `CanQuery = false`; verify a raycast miss does not make it appear visible.
 18. Tag a model nested inside a player character, and a model that contains a player character; verify both are excluded.
+19. Toggle each category button independently; verify only the selected category changes and the other three retain their previous states.
+20. Change several ESP settings repeatedly while remaining on Visual; verify each new control works once, with no duplicate callbacks or stale page connections.
 
 ## Native Roblox renderer
 1. Start with no injected `UIAdapter`; expect the built-in renderer to mount.
