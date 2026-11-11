@@ -55,8 +55,12 @@ end
 
 function WorldMarkers.new(options)
     options = options or {}
+    local raycastParams = RaycastParams.new()
+    raycastParams.FilterType = Enum.RaycastFilterType.Exclude
     return setmetatable({
         enabled = false,
+        raycastParams = raycastParams,
+        raycastCharacter = nil,
         options = {
             maxDistance = math.clamp(tonumber(options.maxDistance) or 250, 25, 1000),
             updateInterval = math.clamp(tonumber(options.updateInterval) or 0.2, 0.1, 1),
@@ -193,10 +197,12 @@ function WorldMarkers:_isVisible(target, position)
     if not camera then return false end
     local origin = camera.CFrame.Position
     local direction = position - origin
-    local params = RaycastParams.new()
-    params.FilterType = Enum.RaycastFilterType.Exclude
-    params.FilterDescendantsInstances = self.player and self.player.Character and { self.player.Character } or {}
-    local result = workspace:Raycast(origin, direction, params)
+    local character = self.player and self.player.Character
+    if character ~= self.raycastCharacter then
+        self.raycastCharacter = character
+        self.raycastParams.FilterDescendantsInstances = character and { character } or {}
+    end
+    local result = workspace:Raycast(origin, direction, self.raycastParams)
     return result ~= nil and (result.Instance == target or result.Instance:IsDescendantOf(target))
 end
 
@@ -285,6 +291,8 @@ end
 function WorldMarkers:Destroy()
     self:Disable()
     self.player = nil
+    self.raycastCharacter = nil
+    self.raycastParams = nil
 end
 
 return WorldMarkers
