@@ -197,6 +197,8 @@ function WorldMarkers:_isVisible(target, position)
     if not camera then return false end
     local origin = camera.CFrame.Position
     local direction = position - origin
+    if direction.Magnitude <= 1e-4 then return false end
+
     local character = self.player and self.player.Character
     if character ~= self.raycastCharacter then
         self.raycastCharacter = character
@@ -223,7 +225,14 @@ function WorldMarkers:_updateTarget(target)
     if not adornee then self:_clearMarker(target); return end
 
     local camera = workspace.CurrentCamera
-    if not camera then return end
+    if not camera then
+        local old = self.markers[target]
+        if old then
+            old.gui.Enabled = false
+            if old.highlight then old.highlight.Enabled = false end
+        end
+        return
+    end
     local distance = (camera.CFrame.Position - adornee.Position).Magnitude
     if distance > self.options.maxDistance or not self:_isVisible(target, adornee.Position) then
         local old = self.markers[target]
@@ -286,6 +295,11 @@ function WorldMarkers:Disable()
     if self.heartbeat then self.heartbeat:Disconnect(); self.heartbeat = nil end
     self:_clearAll()
     if self.folder then self.folder:Destroy(); self.folder = nil end
+    self.elapsed = 0
+    self.raycastCharacter = nil
+    if self.raycastParams then
+        self.raycastParams.FilterDescendantsInstances = {}
+    end
 end
 
 function WorldMarkers:Destroy()
