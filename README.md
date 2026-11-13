@@ -52,7 +52,7 @@ Custom UI adapter contract:
 Visible object marker setup (for a place you own):
 - Add the CollectionService tag `VDM_DebugTarget` to a `BasePart` or `Model` you want to inspect.
 - Optionally set the String attribute `VDM_DebugCategory` to `Environment`, `Interactable`, `Resource`, or `Other`. Missing or unrecognized values are grouped as `Other`.
-- Open the Visual page settings panel to cycle marker color (Blue/Green/Amber/Violet/White), label size (10–20 px), maximum distance (100–1000 studs), update interval (0.1–1 s), and category filters.
+- Open the Visual page settings panel to cycle marker color (Blue/Green/Amber/Violet/White), label size (10–20 px), maximum distance (100–1000 studs), update interval (0.1–1 s), and category filters. `WorldMarkers:GetOptionSchema()` is the source of truth for the panel's available values and category list.
 - Enable `VisibleObjectESP` from the Visual page or with `App:SetFeatureEnabled("VisibleObjectESP", true)`.
 - Markers show the object name, distance, and Humanoid health when available. Bounding outlines are occlusion-aware; player characters are excluded.
 - Untagged instances and objects hidden behind geometry are not shown. This module is not a scanner for third-party game entities.
