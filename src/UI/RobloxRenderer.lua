@@ -317,7 +317,8 @@ function Renderer:_renderPage()
                 end))
             end
         end
-    endend
+    end
+end
 
 function Renderer:Mount(model, controller)
     self:Unmount()
