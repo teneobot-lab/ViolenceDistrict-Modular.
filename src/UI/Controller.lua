@@ -32,16 +32,18 @@ function Controller:BuildModel()
         end
         groups[#groups + 1] = { id = group.id, label = group.label, items = entries }
     end
+    local espInstance = self.Loader.Loaded.VisibleObjectESP
+    local espImplementation = espInstance and espInstance.GetImplementation and espInstance:GetImplementation()
+    local espOptions = espImplementation and espImplementation.GetOptions and espImplementation:GetOptions() or nil
+    local espSchema = espImplementation and espImplementation.GetOptionSchema and espImplementation:GetOptionSchema() or nil
+
     return {
         title = "ViolenceDistrict Modular",
         theme = Theme.Get(self.ThemeName),
         groups = groups,
         themeName = self.ThemeName,
-        visibleObjectESP = (function()
-            local instance = self.Loader.Loaded.VisibleObjectESP
-            local implementation = instance and instance.GetImplementation and instance:GetImplementation()
-            return implementation and implementation.GetOptions and implementation:GetOptions() or nil
-        end)(),
+        visibleObjectESP = espOptions,
+        visibleObjectESPSchema = espSchema,
     }
 end
 
