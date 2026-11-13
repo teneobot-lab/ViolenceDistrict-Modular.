@@ -33,6 +33,8 @@ Run these checks in a clean Roblox Luau test place with the source folders repre
 18. Tag a model nested inside a player character, and a model that contains a player character; verify both are excluded.
 19. Toggle each category button independently; verify only the selected category changes and the other three retain their previous states.
 20. Change several ESP settings repeatedly while remaining on Visual; verify each new control works once, with no duplicate callbacks or stale page connections.
+23. Inspect `WorldMarkers:GetOptionSchema()` through the loaded module implementation; verify the Visual panel displays every declared setting/category and uses the declared values, labels, suffixes, and category attribute without a second hard-coded option list.
+24. Add a temporary test descriptor/category to a local test copy of the schema; verify the renderer lays out the additional control and expands the panel without overlap, then revert the test-only descriptor.
 21. After a marker appears, temporarily set `Workspace.CurrentCamera` to `nil`; verify the existing marker and outline are hidden. Restore the camera and verify normal visible-only updates resume.
 22. Disable the module after a marker appears; verify the Heartbeat connection is disconnected, marker instances are destroyed, and the cached RaycastParams character exclusion is cleared before re-enabling.
 
