@@ -16,6 +16,16 @@ local COLORS = {
     Violet = Color3.fromRGB(177, 133, 255),
     White = Color3.fromRGB(235, 242, 255),
 }
+local OPTION_SCHEMA = {
+    settings = {
+        { key = "markerColor", label = "Warna marker", values = { "Blue", "Green", "Amber", "Violet", "White" } },
+        { key = "labelSize", label = "Ukuran label", values = { 10, 12, 14, 16, 18, 20 }, suffix = " px" },
+        { key = "maxDistance", label = "Jarak maksimum", values = { 100, 250, 400, 600, 1000 }, suffix = " studs" },
+        { key = "updateInterval", label = "Interval update", values = { 0.1, 0.2, 0.35, 0.5, 1 }, suffix = " s", decimals = 2 },
+    },
+    categories = CATEGORY_KEYS,
+    categoryAttribute = CATEGORY_ATTRIBUTE,
+}
 local WorldMarkers = {}
 WorldMarkers.__index = WorldMarkers
 
@@ -87,6 +97,25 @@ function WorldMarkers:GetOptions()
     local copy = table.clone(self.options)
     copy.categories = table.clone(self.options.categories)
     return copy
+end
+
+
+function WorldMarkers:GetOptionSchema()
+    local settings = {}
+    for index, descriptor in ipairs(OPTION_SCHEMA.settings) do
+        settings[index] = {
+            key = descriptor.key,
+            label = descriptor.label,
+            values = table.clone(descriptor.values),
+            suffix = descriptor.suffix,
+            decimals = descriptor.decimals,
+        }
+    end
+    return {
+        settings = settings,
+        categories = table.clone(OPTION_SCHEMA.categories),
+        categoryAttribute = OPTION_SCHEMA.categoryAttribute,
+    }
 end
 
 function WorldMarkers:SetOptions(patch)
