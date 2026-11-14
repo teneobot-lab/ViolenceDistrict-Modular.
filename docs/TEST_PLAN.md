@@ -15,7 +15,7 @@ Run these checks in a clean Roblox Luau test place with the source folders repre
 ## VisibleObjectESP
 1. In a test place you own, create a Part named `DebugCrate` and tag it with CollectionService tag `VDM_DebugTarget`.
 2. Start the app and enable `VisibleObjectESP`; expect a marker with the object name.
-3. Move closer/farther; expect distance text to update and the marker to disappear beyond 250 studs.
+3. Move closer/farther; expect distance text to update and the marker to disappear beyond the configured maximum distance.
 4. Place a wall between the camera and the tagged part; expect the marker and outline to hide.
 5. Remove the wall; expect the marker to return.
 6. Tag a Model containing a Humanoid; expect health text to appear when enabled.
@@ -33,11 +33,10 @@ Run these checks in a clean Roblox Luau test place with the source folders repre
 18. Tag a model nested inside a player character, and a model that contains a player character; verify both are excluded.
 19. Toggle each category button independently; verify only the selected category changes and the other three retain their previous states.
 20. Change several ESP settings repeatedly while remaining on Visual; verify each new control works once, with no duplicate callbacks or stale page connections.
-23. Inspect `WorldMarkers:GetOptionSchema()` through the loaded module implementation; verify the Visual panel displays every declared setting/category and uses the declared values, labels, suffixes, and category attribute without a second hard-coded option list.
-24. Add a temporary test descriptor/category to a local test copy of the schema; verify the renderer lays out the additional control and expands the panel without overlap, then revert the test-only descriptor.
 21. After a marker appears, temporarily set `Workspace.CurrentCamera` to `nil`; verify the existing marker and outline are hidden. Restore the camera and verify normal visible-only updates resume.
 22. Disable the module after a marker appears; verify the Heartbeat connection is disconnected, marker instances are destroyed, and the cached RaycastParams character exclusion is cleared before re-enabling.
-
+23. Through the module option API, submit values not listed in `GetOptionSchema()` (for example, a 777-stud range or 13-pixel label); verify the previous setting is retained. Verify every schema-listed value is accepted.
+24. Inspect `WorldMarkers:GetOptionSchema()` through the loaded module implementation; verify the Visual panel displays every declared setting/category and uses the declared values, labels, suffixes, and category attribute without a second hard-coded option list. Add a temporary descriptor/category to a local renderer test copy and verify the panel layout expands without overlap; revert the test-only change.
 ## Native Roblox renderer
 1. Start with no injected `UIAdapter`; expect the built-in renderer to mount.
 2. Confirm Dashboard, Movement, Visual, Diagnostics, and Config navigation buttons switch pages.
