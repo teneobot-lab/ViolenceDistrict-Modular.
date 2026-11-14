@@ -118,19 +118,37 @@ function WorldMarkers:GetOptionSchema()
     }
 end
 
+local function isAllowedSettingValue(key, value)
+    for _, descriptor in ipairs(OPTION_SCHEMA.settings) do
+        if descriptor.key == key then
+            for _, allowed in ipairs(descriptor.values) do
+                if value == allowed then return true end
+            end
+            return false
+        end
+    end
+    return false
+end
+
 function WorldMarkers:SetOptions(patch)
     assert(type(patch) == "table", "options patch must be a table")
     local options = self.options
-    if patch.maxDistance ~= nil then
-        options.maxDistance = math.clamp(tonumber(patch.maxDistance) or options.maxDistance, 25, 1000)
+    local maxDistance = tonumber(patch.maxDistance)
+    if maxDistance and isAllowedSettingValue("maxDistance", maxDistance) then
+        options.maxDistance = maxDistance
     end
-    if patch.updateInterval ~= nil then
-        options.updateInterval = math.clamp(tonumber(patch.updateInterval) or options.updateInterval, 0.1, 1)
+    local updateInterval = tonumber(patch.updateInterval)
+    if updateInterval and isAllowedSettingValue("updateInterval", updateInterval) then
+        options.updateInterval = updateInterval
     end
-    if patch.labelSize ~= nil then
-        options.labelSize = math.clamp(tonumber(patch.labelSize) or options.labelSize, 10, 20)
+    local labelSize = tonumber(patch.labelSize)
+    if labelSize and isAllowedSettingValue("labelSize", labelSize) then
+        options.labelSize = labelSize
     end
-    if patch.markerColor ~= nil and COLORS[patch.markerColor] then
+    if patch.markerColor ~= nil
+        and COLORS[patch.markerColor]
+        and isAllowedSettingValue("markerColor", patch.markerColor)
+    then
         options.markerColor = patch.markerColor
     end
     if patch.categories ~= nil then
