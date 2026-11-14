@@ -15,7 +15,7 @@
 ## VisibleObjectESP scope
 - The experience developer must tag eligible BasePart or Model instances with CollectionService tag `VDM_DebugTarget`.
 - Optional String attribute `VDM_DebugCategory` supports `Environment`, `Interactable`, `Resource`, or `Other`; missing/unknown values are treated as `Other`.
-- The Visual settings panel can cycle marker color, label size, maximum distance, and update interval, and toggle each supported category. Defaults are Blue, 12 px, 250 studs, and 0.2 seconds. Available values, labels, suffixes, and category names are exposed by `WorldMarkers:GetOptionSchema()`; the renderer consumes this schema instead of maintaining a duplicate list.
+- The Visual settings panel can cycle marker color, label size, maximum distance, and update interval, and toggle each supported category. Defaults are Blue, 12 px, 250 studs, and 0.2 seconds. Available values, labels, suffixes, and category names are exposed by `WorldMarkers:GetOptionSchema()`; the renderer consumes this schema instead of maintaining a duplicate list. `SetOptions` accepts only setting values declared by that schema, so unsupported numeric values cannot silently create UI/runtime mismatches.
 - Player characters are excluded.
 - Targets must be descendants of `Workspace`; targets outside the rendered world are ignored.
 - A camera raycast must hit the tagged target (or one of its descendants) before a marker is shown; a raycast miss or near-zero ray direction is treated as not visible. If `CurrentCamera` is unavailable, existing markers are hidden rather than left stale. Reusable RaycastParams exclude the local character and refresh their filter when that character changes.
