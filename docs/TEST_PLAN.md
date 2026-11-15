@@ -43,6 +43,8 @@ Run these checks in a clean Roblox Luau test place with the source folders repre
 28. Call `SetOptions({ maxDistance = 400, labelSize = 13 })`; expect the whole patch to be rejected and both previous values to remain unchanged, proving validation is atomic.
 29. Call `SetOptions({ unsupportedOption = true })`; expect rejection rather than silent success.
 30. Through `Controller:SetModuleOption`, submit an invalid value; expect `false, error` to reach the caller and no UI refresh to be reported as successful.
+31. Construct `WorldMarkers.new({ maxDistance = 777, labelSize = 13, updateInterval = 0.3, markerColor = "Red" })`; verify unsupported scalar values fall back to 250 studs, 12 px, 0.2 seconds, and Blue so the UI never starts with values absent from its schema.
+32. Construct `WorldMarkers.new({ categories = { Environment = "false" } })`; verify malformed non-boolean category input does not disable or truthily alter filters and defaults that category to enabled.
 ## Native Roblox renderer
 1. Start with no injected `UIAdapter`; expect the built-in renderer to mount.
 2. Confirm Dashboard, Movement, Visual, Diagnostics, and Config navigation buttons switch pages.
