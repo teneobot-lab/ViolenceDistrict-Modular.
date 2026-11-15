@@ -37,6 +37,12 @@ Run these checks in a clean Roblox Luau test place with the source folders repre
 22. Disable the module after a marker appears; verify the Heartbeat connection is disconnected, marker instances are destroyed, and the cached RaycastParams character exclusion is cleared before re-enabling.
 23. Through the module option API, submit values not listed in `GetOptionSchema()` (for example, a 777-stud range or 13-pixel label); verify the previous setting is retained. Verify every schema-listed value is accepted.
 24. Inspect `WorldMarkers:GetOptionSchema()` through the loaded module implementation; verify the Visual panel displays every declared setting/category and uses the declared values, labels, suffixes, and category attribute without a second hard-coded option list. Add a temporary descriptor/category to a local renderer test copy and verify the panel layout expands without overlap; revert the test-only change.
+25. Call `SetOptions({ categories = { Environment = false } })`; verify only Environment changes and the other category filters retain their current values.
+26. Call `SetOptions({ categories = { Environment = "false" } })` and `SetOptions({ categories = "invalid" })`; expect `false, error` and no configuration changes.
+27. Call `SetOptions({ categories = { UnknownCategory = false } })`; expect rejection and no configuration changes.
+28. Call `SetOptions({ maxDistance = 400, labelSize = 13 })`; expect the whole patch to be rejected and both previous values to remain unchanged, proving validation is atomic.
+29. Call `SetOptions({ unsupportedOption = true })`; expect rejection rather than silent success.
+30. Through `Controller:SetModuleOption`, submit an invalid value; expect `false, error` to reach the caller and no UI refresh to be reported as successful.
 ## Native Roblox renderer
 1. Start with no injected `UIAdapter`; expect the built-in renderer to mount.
 2. Confirm Dashboard, Movement, Visual, Diagnostics, and Config navigation buttons switch pages.
