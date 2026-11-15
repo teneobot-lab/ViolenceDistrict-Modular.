@@ -80,8 +80,11 @@ function Controller:SetModuleOption(name, key, value)
     end
     local patch = {}
     patch[key] = value
-    local ok, result = pcall(function() return implementation:SetOptions(patch) end)
-    if not ok then return false, result end
+    local ok, accepted, result = pcall(function()
+        return implementation:SetOptions(patch)
+    end)
+    if not ok then return false, accepted end
+    if accepted == false then return false, result end
     self:Refresh()
     return true, result
 end
