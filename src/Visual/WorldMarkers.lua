@@ -118,42 +118,63 @@ function WorldMarkers:GetOptionSchema()
     }
 end
 
-local function isAllowedSettingValue(key, value)
+local CATEGORY_SET = {}
+for _, category in ipairs(CATEGORY_KEYS) do
+    CATEGORY_SET[category] = true
+end
+
+local function getAllowedSettingValue(key, value)
     for _, descriptor in ipairs(OPTION_SCHEMA.settings) do
         if descriptor.key == key then
             for _, allowed in ipairs(descriptor.values) do
-                if value == allowed then return true end
+                if type(allowed) == "number" and tonumber(value) == allowed then
+                    return allowed
+                elseif value == allowed then
+                    return allowed
+                end
             end
-            return false
+            return nil
         end
     end
-    return false
+    return nil
 end
 
 function WorldMarkers:SetOptions(patch)
-    assert(type(patch) == "table", "options patch must be a table")
-    local options = self.options
-    local maxDistance = tonumber(patch.maxDistance)
-    if maxDistance and isAllowedSettingValue("maxDistance", maxDistance) then
-        options.maxDistance = maxDistance
+    if type(patch) ~= "table" then
+        return false, "options patch must be a table"
     end
-    local updateInterval = tonumber(patch.updateInterval)
-    if updateInterval and isAllowedSettingValue("updateInterval", updateInterval) then
-        options.updateInterval = updateInterval
+
+    -- Validate the entire patch before mutating state, so invalid updates are atomic.
+    local normalized = {}
+    for key, value in pairs(patch) do
+        if key == "categories" then
+            if type(value) ~= "table" then
+                return false, "categories must be a table"
+            end
+            local nextCategories = table.clone(self.options.categories)
+            for category, enabled in pairs(value) do
+                if not CATEGORY_SET[category] then
+                    return false, "unsupported category: " .. tostring(category)
+                end
+                if type(enabled) ~= "boolean" then
+                    return false, "category filter values must be boolean"
+                end
+                nextCategories[category] = enabled
+            end
+            normalized.categories = nextCategories
+        else
+            local allowed = getAllowedSettingValue(key, value)
+            if allowed == nil then
+                return false, "invalid or unsupported option: " .. tostring(key)
+            end
+            normalized[key] = allowed
+        end
     end
-    local labelSize = tonumber(patch.labelSize)
-    if labelSize and isAllowedSettingValue("labelSize", labelSize) then
-        options.labelSize = labelSize
+
+    for key, value in pairs(normalized) do
+        self.options[key] = value
     end
-    if patch.markerColor ~= nil
-        and COLORS[patch.markerColor]
-        and isAllowedSettingValue("markerColor", patch.markerColor)
-    then
-        options.markerColor = patch.markerColor
-    end
-    if patch.categories ~= nil then
-        options.categories = normalizeCategories(patch.categories)
-    end
+
     for target, marker in pairs(self.markers) do
         local adornee = getAdornee(target)
         local camera = workspace.CurrentCamera
@@ -168,12 +189,12 @@ function WorldMarkers:SetOptions(patch)
         else
             self:_applyStyle(marker)
             local distance = (camera.CFrame.Position - adornee.Position).Magnitude
-            local visible = distance <= options.maxDistance and self:_isVisible(target, adornee.Position)
+            local visible = distance <= self.options.maxDistance and self:_isVisible(target, adornee.Position)
             marker.gui.Enabled = visible
             if marker.highlight then marker.highlight.Enabled = visible end
         end
     end
-    return self:GetOptions()
+    return true, self:GetOptions()
 end
 
 function WorldMarkers:_applyStyle(marker)
