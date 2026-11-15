@@ -26,6 +26,22 @@ local OPTION_SCHEMA = {
     categories = CATEGORY_KEYS,
     categoryAttribute = CATEGORY_ATTRIBUTE,
 }
+
+local function getAllowedSettingValue(key, value)
+    for _, descriptor in ipairs(OPTION_SCHEMA.settings) do
+        if descriptor.key == key then
+            for _, allowed in ipairs(descriptor.values) do
+                if type(allowed) == "number" and tonumber(value) == allowed then
+                    return allowed
+                elseif value == allowed then
+                    return allowed
+                end
+            end
+            return nil
+        end
+    end
+    return nil
+end
 local WorldMarkers = {}
 WorldMarkers.__index = WorldMarkers
 
@@ -55,7 +71,7 @@ local function normalizeCategories(value)
     local result = {}
     if type(value) == "table" then
         for _, category in ipairs(CATEGORY_KEYS) do
-            result[category] = value[category] ~= false
+            result[category] = type(value[category]) == "boolean" and value[category] or true
         end
     else
         for _, category in ipairs(CATEGORY_KEYS) do result[category] = true end
@@ -72,10 +88,10 @@ function WorldMarkers.new(options)
         raycastParams = raycastParams,
         raycastCharacter = nil,
         options = {
-            maxDistance = math.clamp(tonumber(options.maxDistance) or 250, 25, 1000),
-            updateInterval = math.clamp(tonumber(options.updateInterval) or 0.2, 0.1, 1),
-            labelSize = math.clamp(tonumber(options.labelSize) or 12, 10, 20),
-            markerColor = COLORS[options.markerColor] and options.markerColor or "Blue",
+            maxDistance = getAllowedSettingValue("maxDistance", options.maxDistance) or 250,
+            updateInterval = getAllowedSettingValue("updateInterval", options.updateInterval) or 0.2,
+            labelSize = getAllowedSettingValue("labelSize", options.labelSize) or 12,
+            markerColor = getAllowedSettingValue("markerColor", options.markerColor) or "Blue",
             categories = normalizeCategories(options.categories),
             showDistance = options.showDistance ~= false,
             showHealth = options.showHealth ~= false,
@@ -123,21 +139,6 @@ for _, category in ipairs(CATEGORY_KEYS) do
     CATEGORY_SET[category] = true
 end
 
-local function getAllowedSettingValue(key, value)
-    for _, descriptor in ipairs(OPTION_SCHEMA.settings) do
-        if descriptor.key == key then
-            for _, allowed in ipairs(descriptor.values) do
-                if type(allowed) == "number" and tonumber(value) == allowed then
-                    return allowed
-                elseif value == allowed then
-                    return allowed
-                end
-            end
-            return nil
-        end
-    end
-    return nil
-end
 
 function WorldMarkers:SetOptions(patch)
     if type(patch) ~= "table" then
