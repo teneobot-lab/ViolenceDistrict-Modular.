@@ -71,7 +71,12 @@ local function normalizeCategories(value)
     local result = {}
     if type(value) == "table" then
         for _, category in ipairs(CATEGORY_KEYS) do
-            result[category] = type(value[category]) == "boolean" and value[category] or true
+            local enabled = value[category]
+            if type(enabled) == "boolean" then
+                result[category] = enabled
+            else
+                result[category] = true
+            end
         end
     else
         for _, category in ipairs(CATEGORY_KEYS) do result[category] = true end
