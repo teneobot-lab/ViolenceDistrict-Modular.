@@ -14,7 +14,7 @@
 
 ## VisibleObjectESP scope
 - The experience developer must tag eligible BasePart or Model instances with CollectionService tag `VDM_DebugTarget`.
-- Optional String attribute `VDM_DebugCategory` supports `Environment`, `Interactable`, `Resource`, or `Other`; missing/unknown values are treated as `Other`.
+- Optional String attribute `VDM_DebugCategory` supports `Environment`, `Interactable`, `Resource`, or `Other`; missing/unknown values are treated as `Other`. A known category that is disabled stays excluded and is never remapped to `Other`.
 - The Visual settings panel can cycle marker color, label size, maximum distance, and update interval, and toggle each supported category. Defaults are Blue, 12 px, 250 studs, and 0.2 seconds. Available values, labels, suffixes, and category names are exposed by `WorldMarkers:GetOptionSchema()`; the renderer consumes this schema instead of maintaining a duplicate list. `SetOptions` validates the full patch before changing state: unsupported keys/values, non-table category maps, unknown categories, and non-boolean category values are rejected atomically. Partial category maps update only the named categories. `Controller:SetModuleOption` forwards validation failures instead of reporting them as successful UI updates. Constructor-supplied scalar values are also normalized against the schema, falling back to Blue/12 px/250 studs/0.2 seconds when unsupported; malformed initial category values default to enabled rather than being treated as truthy.
 - Player characters are excluded.
 - Targets must be descendants of `Workspace`; targets outside the rendered world are ignored.
