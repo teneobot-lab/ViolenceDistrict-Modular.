@@ -284,7 +284,9 @@ end
 
 function WorldMarkers:_categoryAllowed(target)
     local category = target:GetAttribute(CATEGORY_ATTRIBUTE)
-    if type(category) ~= "string" or not self.options.categories[category] then
+    -- Only missing/unknown category names fall back to Other. A known but
+    -- disabled category must remain disabled rather than being remapped.
+    if type(category) ~= "string" or not CATEGORY_SET[category] then
         category = "Other"
     end
     return self.options.categories[category] == true
