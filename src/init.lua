@@ -32,6 +32,8 @@ local function registerSafeModules()
 
     app.Registry:Register("VisibleObjectESP", function()
         return ModuleAdapter.new("VisibleObjectESP", require(script.Visual.WorldMarkers).new({
+            -- Add numeric PlaceId values for places you own. Empty means disabled everywhere.
+            allowedPlaceIds = {},
             maxDistance = 250,
             updateInterval = 0.2,
             showDistance = true,
