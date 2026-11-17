@@ -47,6 +47,9 @@ Run these checks in a clean Roblox Luau test place with the source folders repre
 32. Construct `WorldMarkers.new({ categories = { Environment = "false" } })`; verify malformed non-boolean category input does not disable or truthily alter filters and defaults that category to enabled.
 33. Keep `Other` enabled, disable `Environment`, and tag one object in each category; verify the Environment object remains hidden while the Other object stays visible. This catches accidental remapping of a disabled known category to `Other`.
 34. Enable and disable `Other` while testing objects with a missing or unrecognized `VDM_DebugCategory`; verify only those fallback objects follow the `Other` filter, while explicitly named categories follow their own filters.
+35. Leave `allowedPlaceIds` empty in `src/init.lua`; verify enabling VisibleObjectESP is rejected, no marker folder/Heartbeat connection is created, and the Visual panel reports that the PlaceId is not allowed.
+36. Add the numeric PlaceId of the owned test place to `allowedPlaceIds`; verify VisibleObjectESP can enable there and the existing tag, category, raycast, and occlusion checks still apply.
+37. Use a different PlaceId not present in the allowlist; verify enabling is rejected even when an instance in that place happens to carry the `VDM_DebugTarget` tag.
 ## Native Roblox renderer
 1. Start with no injected `UIAdapter`; expect the built-in renderer to mount.
 2. Confirm Dashboard, Movement, Visual, Diagnostics, and Config navigation buttons switch pages.
