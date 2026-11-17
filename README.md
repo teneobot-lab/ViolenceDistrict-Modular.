@@ -50,6 +50,7 @@ Custom UI adapter contract:
 - `Unmount()` — optional cleanup.
 
 Visible object marker setup (for a place you own):
+- In `src/init.lua`, add the numeric PlaceId(s) of your own published place(s) to `allowedPlaceIds` in the `VisibleObjectESP` constructor. The list is empty by default, so the module refuses to enable in every place until you explicitly allow one. Do not add third-party experience IDs.
 - Add the CollectionService tag `VDM_DebugTarget` to a `BasePart` or `Model` you want to inspect.
 - Optionally set the String attribute `VDM_DebugCategory` to `Environment`, `Interactable`, `Resource`, or `Other`. Missing or unrecognized values are grouped as `Other`.
 - Open the Visual page settings panel to cycle marker color (Blue/Green/Amber/Violet/White), label size (10–20 px), maximum distance (100–1000 studs), update interval (0.1–1 s), and category filters. `WorldMarkers:GetOptionSchema()` is the source of truth for the panel's available values and category list.
