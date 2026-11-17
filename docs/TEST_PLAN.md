@@ -50,6 +50,7 @@ Run these checks in a clean Roblox Luau test place with the source folders repre
 35. Leave `allowedPlaceIds` empty in `src/init.lua`; verify enabling VisibleObjectESP is rejected, no marker folder/Heartbeat connection is created, and the Visual panel reports that the PlaceId is not allowed.
 36. Add the numeric PlaceId of the owned test place to `allowedPlaceIds`; verify VisibleObjectESP can enable there and the existing tag, category, raycast, and occlusion checks still apply.
 37. Use a different PlaceId not present in the allowlist; verify enabling is rejected even when an instance in that place happens to carry the `VDM_DebugTarget` tag.
+38. Add zero, negative, fractional, and string values to `allowedPlaceIds`; verify invalid entries are ignored and cannot authorize activation.
 ## Native Roblox renderer
 1. Start with no injected `UIAdapter`; expect the built-in renderer to mount.
 2. Confirm Dashboard, Movement, Visual, Diagnostics, and Config navigation buttons switch pages.
