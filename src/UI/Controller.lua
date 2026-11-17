@@ -36,6 +36,9 @@ function Controller:BuildModel()
     local espImplementation = espInstance and espInstance.GetImplementation and espInstance:GetImplementation()
     local espOptions = espImplementation and espImplementation.GetOptions and espImplementation:GetOptions() or nil
     local espSchema = espImplementation and espImplementation.GetOptionSchema and espImplementation:GetOptionSchema() or nil
+    local espExperienceAllowed = espImplementation
+        and espImplementation.IsExperienceAllowed
+        and espImplementation:IsExperienceAllowed() or false
 
     return {
         title = "ViolenceDistrict Modular",
@@ -44,6 +47,7 @@ function Controller:BuildModel()
         themeName = self.ThemeName,
         visibleObjectESP = espOptions,
         visibleObjectESPSchema = espSchema,
+        visibleObjectESPAllowed = espExperienceAllowed,
     }
 end
 
