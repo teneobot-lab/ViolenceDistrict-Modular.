@@ -84,12 +84,24 @@ local function normalizeCategories(value)
     return result
 end
 
+local function normalizePlaceIds(value)
+    local result = {}
+    if type(value) ~= "table" then return result end
+    for _, placeId in ipairs(value) do
+        if type(placeId) == "number" and placeId > 0 and placeId % 1 == 0 then
+            result[placeId] = true
+        end
+    end
+    return result
+end
+
 function WorldMarkers.new(options)
     options = options or {}
     local raycastParams = RaycastParams.new()
     raycastParams.FilterType = Enum.RaycastFilterType.Exclude
     return setmetatable({
         enabled = false,
+        allowedPlaceIds = normalizePlaceIds(options.allowedPlaceIds),
         raycastParams = raycastParams,
         raycastCharacter = nil,
         options = {
@@ -112,6 +124,10 @@ end
 
 function WorldMarkers:Init(context)
     self.player = context and context.player or Players.LocalPlayer
+end
+
+function WorldMarkers:IsExperienceAllowed()
+    return self.allowedPlaceIds[game.PlaceId] == true
 end
 
 function WorldMarkers:GetOptions()
@@ -341,6 +357,9 @@ end
 
 function WorldMarkers:Enable()
     if self.enabled then return end
+    if not self:IsExperienceAllowed() then
+        error("VisibleObjectESP is disabled for this PlaceId; add this owned PlaceId to allowedPlaceIds in src/init.lua")
+    end
     self.player = self.player or Players.LocalPlayer
     local playerGui = self.player and self.player:FindFirstChildOfClass("PlayerGui")
     if not playerGui then error("PlayerGui is unavailable") end
