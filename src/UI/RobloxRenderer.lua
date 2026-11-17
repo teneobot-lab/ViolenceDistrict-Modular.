@@ -264,7 +264,10 @@ function Renderer:_renderPage()
         corner(panel, 12); stroke(panel)
         local heading = label(panel, "VISIBLE OBJECT ESP SETTINGS", 11, palette.accent, Enum.Font.GothamBold)
         heading.Position = UDim2.fromOffset(15, 10); heading.Size = UDim2.new(1, -30, 0, 20)
-        local hint = label(panel, "Hanya tag VDM_DebugTarget • occlusion aktif • karakter pemain dikecualikan", 10, palette.muted)
+        local gateHint = self.Model.visibleObjectESPAllowed
+            and "PlaceId diizinkan"
+            or "PlaceId belum diizinkan (atur src/init.lua)"
+        local hint = label(panel, "Tag VDM_DebugTarget • occlusion aktif • pemain dikecualikan • " .. gateHint, 10, palette.muted)
         hint.Position = UDim2.fromOffset(15, 31); hint.Size = UDim2.new(1, -30, 0, 28)
 
         local function nextIn(values, current)
